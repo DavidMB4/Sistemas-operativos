@@ -50,3 +50,91 @@ Las mejores páginas para cambiar son las que se encuentran en la categoría 0, 
 En algunos casos es más óptimo LRU o reloj.
 
 El más eficiente podría ser el optimal, pero solo de forma teórica ya que es el más difícil de llevarlo a la practica, asi que yo elegiría LRU como el más eficiente, ya que aunque puede gastar más recursos que otros algoritmos, es el que mejor referencia el estado de las páginas en los sistemas para ser reemplazados.
+
+### 3.2 Memoria real 
+###### 1.Escribe un programa en C o Python que simule la administración de memoria mediante particiones fijas.
+###### 2. Diseña un algoritmo para calcular qué procesos pueden ser asignados  a un sistema con memoria real limitada utilizando el algoritmo de "primera cabida".
+
+Para el programa se uso como base el codigo compartido por el profesor en la seccion de Administraciono de memoria en las respuestas del ejercicio. El codigo simula la administracion de memoria con particiones fijas al preguntarle al usuario el tamaño de la memoria y el numero de particiones que quieres.
+~~~
+int main(){
+    int memoria_total, particiones, opcion, tamano_particion = 0;
+    Particion particion[max_particiones];
+
+    printf("Ingresa el tamaño de la memoria: \n");
+    scanf("%d", &memoria_total);
+
+    printf("Ingresa el numero de particiones: \n");
+    scanf("%d", &particiones);
+~~~
+
+El usuario le asigna el tamaño a cada particion, luego puede asignar un proceso a cada particion mientras cumpla con los requisitos de tamaño, el codigo tambien utiliza la primera cabida ya que recorre el arreglo de particion para ver cual cumple con el tamaño indicado en la asignacion del proceso, la primera particion que encuentre que cumpla los requisitos le asigna el proceso.
+
+~~~
+int asignado = 0;
+for (int i = 0; i < particiones; i++) {
+    if (particion[i].id_de_proceso == -1 && particion[i].tamano >= tam_proceso) {
+        particion[i].id_de_proceso = id_de_proceso;
+        asignado = 1;
+        printf("Proceso %d asignado a la partición %d.\n", id_de_proceso, i + 1);
+        break;
+        }
+}
+if (!asignado) {
+    printf("No se encontró una partición disponible para el proceso %d.\n", id_de_proceso);
+}
+break;
+~~~
+
+### Organizacion de memoria virtual
+###### 1. Investiga y explica el concepto de "paginación" y "segmentación". ¿Cuáles son las ventajas y desventajas de cada técnica?
+
+La __paginación__ es una estrategia de organización de la memoria física que consiste en dividir la memoria en porciones de igual tamaño. A dichas porciones se las conoce como páginas físicas o marcos. La división de la memoria en páginas facilita la gestión de la memoria física. Los marcos se identifican con un número que se denomina «número de página física. A su vez, cada página física se asigna a un proceso de forma exclusiva.
+
+Tanto el tamaño de las páginas como de los marcos de páginas es definido por el hardware y suele ser una potencia de 2. Permite que las páginas de un proceso puedan cargarse en cualquier marco de página disponible, sin necesidad de que estén contiguos en la memoria.
+
+El sistema operativo mantiene una tabla de páginas para cada proceso, que mapea cada página lógica a su marco físico correspondiente. Esta tabla se utiliza para traducir las direcciones lógicas (del proceso) a direcciones físicas (de la memoria). Cuando el proceso necesita acceder a una dirección lógica, el traductor de memoria paginada toma la dirección lógica y, por medio de la tabla de página, obtiene la dirección física real.
+
+Ejemplo:
+Supongamos un tamaño de página de 4 KB. Un proceso tiene 16 KB de memoria lógica, dividido en 4 páginas. La memoria física tiene 8 marcos disponibles.
+Las páginas del proceso se asignan a marcos libres como sigue:
+![Tabla de paginacion](https://github.com/DavidMB4/Graficacion/blob/master/Actividad1Transformaciones/pokeball.png?raw=true)
+
+La tabla de páginas almacenará esta información. Cuando el proceso necesita acceder a una dirección lógica, se consulta esta tabla para determinar su ubicación física.
+
+__Ventajas:__
+* Fácil de usar gestión de la memoria algoritmo
+* No hay necesidad de fragmentación externa
+* El intercambio es fácil entre páginas y marcos de página del mismo tamaño.
+
+__Desventajas:__
+* Puede causar fragmentación interna.
+* Las tablas de páginas consumen memoria adicional.
+* La paginación multinivel puede generar una sobrecarga de referencia de memoria.
+
+
+__La segmentación__ es una técnica que asigna segmentos contiguos de memoria para las áreas de memoria de un proceso. De esta forma, logra acomodarse más a la visión de la memoria por parte del usuario. Un segmento de programa representa su parte lógica e incluye la función principal del programa, las estructuras de datos, las funciones de utilidad, etc. Cada segmento tiene un nombre y una longitud.
+
+El sistema operativo mantiene una tabla de mapas de segmentos para todos los procesos. También incluye una lista de bloques de memoria libres junto con su tamaño, números de segmento y ubicaciones de memoria en la memoria principal o memoria virtual.
+
+Las direcciones virtuales se componen de un número de segmento y el desplazamiento dentro del segmento. El desplazamiento debe ser menor que el largo asociado al segmento.
+
+Cada segmento puede asignarse en cualquier parte de la memoria física.
+La segmentación no requiere que los segmentos sean contiguos en memoria física.
+
+Ejemplo:
+Supongamos que un programa tiene las siguientes secciones:
+![Tabla de segmentacion](https://github.com/DavidMB4/Graficacion/blob/master/Actividad1Transformaciones/pokeball.png?raw=true)
+
+Si se usa segmentación, cada sección se asigna a un segmento diferente. Una dirección lógica en el segmento 1 (código) con un desplazamiento de 500 se traduce a una dirección física en la memoria donde ese segmento está cargado.
+
+
+__Ventajas:__
+* Ofrecer protección dentro de los segmentos.
+* Puede lograr compartir segmentando y haciendo referencia a múltiples procesos.
+* No ofrece fragmentación interna.
+* Las tablas de segmentos usan menos memoria que la paginación
+
+__Desventajas:__
+* En el método de segmentación, los procesos se cargan o eliminan de la memoria principal. Por tanto, el espacio libre de memoria se separa en pequeños trozos, lo que puede crear un problema de fragmentación externa.
+* Algoritmo costoso de gestión de memoria

@@ -77,10 +77,10 @@ int main(){
                     scanf("%d", &id_de_proceso);
 
                     for (int i = 0; i < particiones; i++) {
-                    if (particion[i].id_de_proceso == id_de_proceso) {
-                        printf("Ese Id ya esta asignado, prueba con otro. \n ");
-                        id_igual = true;
-                        break;
+                        if (particion[i].id_de_proceso == id_de_proceso) {
+                            printf("Ese Id ya esta asignado, prueba con otro. \n ");
+                            id_igual = true;
+                            break;
                     }
                 }
                 } while (id_igual == true);
