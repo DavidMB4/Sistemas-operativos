@@ -278,3 +278,118 @@ __Ventajas:__
 __Desventajas:__
 * En el método de segmentación, los procesos se cargan o eliminan de la memoria principal. Por tanto, el espacio libre de memoria se separa en pequeños trozos, lo que puede crear un problema de fragmentación externa.
 * Algoritmo costoso de gestión de memoria
+
+###### 2. Escribe un programa que simule una tabla de páginas para procesos con acceso aleatorio a memoria virtual.
+
+Para el el codigo de la tabla de paginas se usa un arreglo que ocntiene todas las paginas, hay 100 y solo puede haber 10 procesos, al momento de asignar un proceso se pide el su ID y el tamaño del proceso, se simula con una formula para calcular la cantidad de paginas que se va a utilizar, como el acceso debe ser aleatorio la forma en que se asigna tambien es aleatoria asi que se usa un random que da un numero aleatorio para la acceder a la posicion del arreglo de las paginas (0-19). Esto se puede hacer por la forma en que funciona la paginacion, ya que no necesitan ser ocntinuos los espacios donde almacenan los procesos.
+~~~            
+    if paginas_disponibles >= num_paginas:
+        while paginas_asignadas < num_paginas:
+            pagina = random.randint(0, len(tabla_paginas) - 1)  
+            if tabla_paginas[pagina] == -1: 
+                tabla_paginas[pagina] = id_proceso 
+                paginas_asignadas += 1
+    else:
+        print(f"No hay suficiente memoria para asignar el proceso {id_proceso}.")
+~~~
+
+Se peude ver toda la tabla en forma de arreglo con la opcion 3, pero se puede acceder de forma aleatoria a varias paginas con la opcion 2.
+~~~
+def acceso_aleatorio(num_acceso):
+    print("\nAccesos aleatorios a la memoria:")
+    for _ in range(num_acceso):
+        pagina = random.randint(0, len(tabla_paginas) - 1)
+        if tabla_paginas[pagina] == -1:
+            print(f"Página {pagina} está libre.")
+        else:
+            print(f"Página {pagina} es parte del proceso {tabla_paginas[pagina]}.")
+~~~
+
+__Codigo completo:__
+~~~
+import random
+
+max_paginas = 100
+max_procesos = 10
+tam_pagina = 4
+
+tabla_paginas = []
+for i in range (max_paginas):
+    tabla_paginas.append(-1)
+    
+def asignar_proceso(id_proceso, tamano_proceso):    
+    num_paginas = (tamano_proceso + tam_pagina - 1) // tam_pagina
+    paginas_asignadas = 0
+    paginas_disponibles = 0
+    
+    for i in range (max_paginas):
+        if tabla_paginas[i] == -1:
+            paginas_disponibles = paginas_disponibles + 1
+            
+    if paginas_disponibles >= num_paginas:
+        while paginas_asignadas < num_paginas:
+            pagina = random.randint(0, len(tabla_paginas) - 1)  
+            if tabla_paginas[pagina] == -1: 
+                tabla_paginas[pagina] = id_proceso 
+                paginas_asignadas += 1
+    else:
+        print(f"No hay suficiente memoria para asignar el proceso {id_proceso}.")
+    
+def mostrar_tabla():
+    print("\n Tabla de paginas")
+    for i in range(max_paginas):
+        if tabla_paginas[i] == -1:
+            print(f"Página {i}: Libre")
+        else:
+            print(f"Página {i}: Proceso {tabla_paginas[i]}")
+            
+def liberar_proceso():
+    id_proceso = int(input("\n Ingresa el id del proceso a liberar: "))     
+    liberado = False
+    for i in range(max_paginas):
+        if tabla_paginas[i] == id_proceso:
+            tabla_paginas[i] = -1 
+            liberado = True
+    if liberado == True:
+            print(f"Proceso {id_proceso} liberado.")
+    else:
+            print(f"Proceso {id_proceso} no encontrado.")        
+            
+def acceso_aleatorio(num_acceso):
+    print("\nAccesos aleatorios a la memoria:")
+    for _ in range(num_acceso):
+        pagina = random.randint(0, len(tabla_paginas) - 1)
+        if tabla_paginas[pagina] == -1:
+            print(f"Página {pagina} está libre.")
+        else:
+            print(f"Página {pagina} es parte del proceso {tabla_paginas[pagina]}.")
+    
+def main():
+    while True:
+        print("\n1. Asignar proceso")
+        print("2. Acceso aleatorio")
+        print("3. Mostrar estado de la tabla de páginas")
+        print("4. Liberar proceso")
+        print("5. Salir")
+        opcion = int(input("Seleccione una opción: "))
+
+        if opcion == 1:
+            id_proceso = int(input("Ingrese el ID del proceso: "))
+            tamano_proceso = int(input("Ingrese el tamaño del proceso (KB): "))
+            asignar_proceso(id_proceso, tamano_proceso)
+        elif opcion == 2:
+            num_acceso = int(input("Ingrese el numero de accesos aleatorios: "))
+            acceso_aleatorio(num_acceso)
+        elif opcion == 3:
+            mostrar_tabla()
+        elif opcion == 4:
+            liberar_proceso()
+        elif opcion == 5:
+            print("Saliendo del programa.")
+            break
+        else:
+            print("Opción no válida.")
+            
+if __name__ == "__main__":
+    main()
+~~~
