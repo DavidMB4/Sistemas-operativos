@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "admin_memoria.C": "cpp"
+        "admin_memoria.C": "cpp",
+        "algoritmo_LRU.C": "cpp"
     }
 }
