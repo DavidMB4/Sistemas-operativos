@@ -1995,7 +1995,7 @@ David@SistemasOperativos:~$ sudo chown invitado1 privado.txt
 ```
 
 Y ahora aparece asi cuando lo quiero abrir con mi usuario normal:
-![Permiso denegado]()
+![Permiso denegado](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/Permiso%20denegado.jpg?raw=true)
 
 ### Ejercicio 6: Exploración de Dispositivos
 Al usar el comando lbslk sale los disco y particiones, asi como la memoria que inserté:
