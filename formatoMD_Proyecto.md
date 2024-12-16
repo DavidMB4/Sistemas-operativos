@@ -61,4 +61,99 @@ Desventajas:
 ## Ejercicio 3: Organización lógica y física de archivos
 Un ejemplo de organizacion logica de directorios y subdirectorios puede ser:
 
-![Diagrama jerarquico]()
+![Diagrama jerarquico](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/diagrama%20directorios.jpg?raw=true)
+
+Para la traducción de direcciones hay que dar los siguientes pasos: 
+* Obtener el número de página de los n bits más significativos de la dirección lógica. 
+* Emplear el número de página como índice en la tabla de páginas del proceso para encontrar 
+el número de marco k. 
+* El comienzo de la dirección física del marco es k x 2m y la dirección física del byte referenciado es este número más el desplazamiento. No hace falta calcular esta dirección física, sino que se construye fácilmente concatenando el número de marco con el desplazamiento.
+
+Un ejemplo practico podria ser:
+__Creación del archivo:__ Cuando creamos el archivo documento.txt, el sistema operativo asigna un nombre a este archivo en el sistema de archivos.
+__Asignación de bloques:__ Dado que el archivo documento.txt tiene un tamaño de 100 KB y el sistema de archivos utiliza bloques de 4 KB, el archivo se divide en varias partes
+__Almacenamiento:__ El contenido del archivo documento.txt se divide en fragmentos y se escribe en los bloques físicos. Los primeros 4 KB del archivo se escriben en el bloque físico 101, los siguientes 4 KB se escriben en el bloque físico 102, y así sucesivamente hasta que todos los bloques del archivo se han escrito en los bloques físicos.
+__Actualización del inodo:__ El inodo del archivo documento.txt se actualiza para reflejar el número total de bloques utilizados, los punteros a cada uno de los bloques físicos asignados
+__Acceso al archivo:__ El sistema usa los punteros en el inodo para localizar y leer los datos del archivo en los bloques físicos.
+
+Estructura en disco:
+| **Bloque Lógico**                         | **Bloque Físico**          | **Contenido**|
+|:---------------------------------------:|----------------------:|----------------------:|
+|  1            | 101   | Datos del archivo|
+|  2            | 102   | Datos del archivo|
+|  ...          | ...   | ...|
+| 25            | 125   | Datos del archivo|
+
+Inodo:
+| **Bloque Lógico**                | **BloqueFísico**          
+|:--------------------------------:|----------------------:|
+|  Tamaño del archivo            | 100 kb   |
+|  Numero de bloques            | 25   | 
+|  Puntero a bloque 1          | Bloque fisico 101   | 
+| Puntero a bloque 2            | Bloque fisico 102   | 
+| ...            | ...   | 
+|  Puntero a bloque 25          | Bloque fisico 125   |
+
+## Ejercicio 4: Mecanismos de acceso a los archivos
+Existen diferentes mecanismos de acceso a los archivos, como lo son los accesos secuencial, directo e indexado.
+__Acceso secuencial:__ Es la capacidad de introducir datos en un dispositivo de almacenamiento o un soporte de datos en la misma secunecia en la que estaban ordenados los datos, o de obtenerlos en el mismo orden en el que se introdujeron.
+
+Abrimos el archivo en un punto, y las lecturas/escrituras sucesivas se van realizando a partir del último punto en el que nos quedamos. Abrimos el archivo en un punto, y las lecturas/escrituras sucesivas se van realizando a partir del último punto en el que nos quedamos. Es el modelo básico de Unix y Windows (open --> read --> read --> …)
+
+__Acceso directo:__ Es la capacidad de obtener datos o introducir datos en un dispositivo de almacenamiento en una secuencia independiente de su posición relativa, a través de direcciones que indican la ubicacioni física de los datos.
+
+Cada operación de lectura/escritura indica la posición dentro del archivo sobre la que se quiere trabajar. En Unix, se implementa con lseek().
+
+__Acceso indexado:__ Es perteneciente a la organizacion y acceso de los registros de una estructura de almacenmiento, a través de un índice de las claves que se almacenan en ficheros secuenciales arbitrariamente patrocinados.
+
+El fichero consiste en una tabla con registros, ordenados según una clave (ej. fichas de personas ordenadas por apellidos o DNI).
+
+Cada operación de lectura se puede hacer buscando por clave, o por número de orden. Cada operación de escritura mantiene el fichero bien ordenado.
+
+El SO asocia a cada fichero una o varios ficheros índices para mantener la ordenación de forma eficiente. Estos índices están ocultos al usuario.
+
+Pseudocodigo de acceso secuencial:
+~~~
+Inicio
+Abrir (archivo)
+Mientras haya datos en archivo:
+    Leer (archivo)
+Cerrar (Archivo)
+Fin
+~~~
+
+Pseudocodigo de acceso directo:
+~~~
+Inicio 
+Abrir (archivo.doc)
+Escribe la pagina del archivo a la que quieres ir
+>> 10
+Ir a la Posicion de la pagina "10" del archivo
+Leer datos del archivo
+Cerrar (Archivo.doc)
+Fin
+~~~
+
+Pseudocodigo de acceso indexado:
+~~~
+Abrir (Archivo.doc)
+Abrir indice del archivo 
+Indice = {"Capitulo 1", "Capitulo 2", "Capitulo 3"}
+Selecciona un capitulo
+Posicion =  "Capitulo 1"
+Leer desde Posicion
+Cerrar (Archivo.doc)
+Fin
+~~~
+
+| **Secuencial**                         | **Directo**          | **Indexado**|
+|:---------------------------------------:|----------------------:|----------------------:|
+|  Eficiente para archivos pequeños            | Util para archivos mas grandes   |Ideal para archivos grandes o complejos |
+|  Util para registro continuo            | Acceso a posiciones especificas   | Acceso rapido sin recorrer todo el archivo|
+|  Sencillo de usar| Flexibilidad en el orden de escritura/lectura   | Util en archivos jerarquicos|
+
+
+## Ejercicio 5: Modelo jerárquico y mecanismos de recuperación en caso de falla
+
+Modelo jerarquico ejemplo
+![Modelo jerarquico de sistema de archivos]()
