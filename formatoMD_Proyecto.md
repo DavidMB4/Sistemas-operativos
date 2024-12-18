@@ -287,6 +287,6 @@ Algunos tipos de mecanismos que se usan contra estas amenazas pueden ser:
 * __Tokens:__ Son dispositivos fisicos o digitales que generan códigos únicos (tokens) para validar la identidad del usuario. Pueden ser llaves USB que deben conectarse al sistema, o tambien aplicaciones como Google Authenticator.
 
 Esquema de validacion para un sistema con multiples usuarios:
-![Validacion de sistema operativo con multiples usuarios]()
+![Validacion de sistema operativo con multiples usuarios](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/Validacion%20de%20usuario.jpg?raw=true)
 
 ## Ejercicio 7: Cifrado
