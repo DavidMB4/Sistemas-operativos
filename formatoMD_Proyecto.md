@@ -62,7 +62,7 @@ Desventajas:
 ## Ejercicio 3: Organización lógica y física de archivos
 Un ejemplo de organizacion logica de directorios y subdirectorios puede ser:
 
-![Diagrama jerarquico](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/diagrama%20directorios.jpg?raw=true)
+![Diagrama jerarquico](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/diagrama%20directorios.jpeg?raw=true)
 
 Para la traducción de direcciones hay que dar los siguientes pasos: 
 * Obtener el número de página de los n bits más significativos de la dirección lógica. 
@@ -157,7 +157,7 @@ Fin
 ## Ejercicio 5: Modelo jerárquico y mecanismos de recuperación en caso de falla
 
 Modelo jerarquico ejemplo
-![Modelo jerarquico de sistema de archivos](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/jerarquia%20directorios.jpg?raw=true)
+![Modelo jerarquico de sistema de archivos](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/jerarquia%20directorios.jpeg?raw=true)
 Representa la forma en que estan distribuidos la jerarquia en los archivos de unix/linux. Tiene __/bin__ que es donde estan los ejecutables esenciales que el usuario o el sistema necesita para funcionar de forma correcta.
 __/home__ que es donde se guardan las carpetas personales del usuario.
 __/lib__ que contiene bibliotecas esenciales compartidas por los programas en /bin y /sbin.
@@ -259,6 +259,76 @@ En la auditoria cada acción realizada por el empleado es registrada en los logs
 Si se detecta un intento de acceso no autorizado, el sistema genera una alerta en el panel de administración. El administrador del sistema revisa los registros de auditoría para identificar qué ocurrió, cuándo y quién intentó acceder sin autorización. Esto permite la determinar la responsabilidad de las acciones en el sistema, detectar actividades sospechosas o violaciones de seguridad, y tener un historial completo de las operaciones para análisis futuros.
 
 ## Ejercicio 4: Implantación de matrices de acceso
+Una matriz de acceso es una forma de representar qué operaciones pueden realizar diferentes usuarios sobre ciertos recursos en un sistema. Esto, con el objetivo de proteger la información crítica y confidencial que puede verse en riesgo si no se limita, documenta, comunica ni controla formalmente.
+
+Ejemplo de matriz de acceso:
+| **Usuario**        | **Recurso 1** | **Recurso 2** | **Recurso 3** | **Recurso 4**|
+|:------------------:|--------------:|--------------:|--------------:|-------------:|
+|  Usuario 1         |Leer y escribir|  No permitido |Leer           |Escribir      |
+|  Usuario 2         |Leer           |Leer y escribir|No Permitido   |Leer          |
+|  Usuario 3         |No permitido   |  Permitido    |Leer y escribir|Leer          |
+
+Aqui muestra que existen 3 usuarios cada uno tiene acceso a los diferentes recursos que hay, pero hay recursos a los que no tienen acceso, asi como hay algunos en los que pueden hacer las 2 operaciones y otros en donde solo pueden hacer uno. Esto es util ya que por ejemplo en un sistem operativo es importante determinar que elementos puedesn manejar los archivos criticos de este sistema, asi evitar errores en el futuro. 
+
+Ejemplo de simulacion:
+En este codigo se define la matriz que ya se habia hecho.
+~~~
+matriz_acceso = [
+    #Filas son usuarios, columnas son recursos
+    [3, 0, 1, 2],  # Usuario 1
+    [1, 3, 0, 1],  # Usuario 2
+    [0, 3, 3, 1],  # Usuario 3
+]
+~~~
+Filas siendo usarios del 1 al 3, y columanas siendo los recursos del 1 al 4.
+
+Se definen despues los recursos que hay en la matriz, siendo un numero diferente a 0 alguna operacion.
+~~~
+# Valores de la matriz
+permisos = {
+    3: "Lectura y escritura",
+    2: "Escritura",
+    1: "Lectura",
+    0: "No permitido"
+}
+~~~
+
+Se muestra el menu para seleccionar el usuario que va a entrar y el recurso al que se desea acceder.
+~~~
+print("Sistema de control de acceso")
+usuario = int(input("Introduce el id del usuario (1-3): ")) - 1
+recurso = int(input("Introduce el id del recurso (1-4): ")) - 1
+~~~
+
+Se valida los datos que entraron, si hay un 0 en la posicion donde se seleccione al usuario y el recurso significa que no tiene acceso, sino, se mostrara la operacion que puede hacer con el recurso.
+~~~
+if 0 <= usuario < 3 and 0 <= recurso < 4:
+    permiso = matriz_acceso[usuario][recurso]
+    
+    if permiso == 0:
+        print(f"Acceso denegado: Usuario {usuario + 1} no tiene permisos para el Recurso {recurso + 1}.")
+    else:
+        print(f"Acceso permitido: Usuario {usuario + 1} puede realizar la operación '{permisos[permiso]}' en el Recurso {recurso + 1}.")
+else:
+    print("Entrada inválida. Por favor, introduce los id válidos para usuario y recurso.")
+~~~
+
+Ahora una prueba con el usuario 1 y el recurso 2.
+````Bash
+Sistema de control de acceso
+Introduce el id del usuario (1-3): 1
+Introduce el id del recurso (1-4): 2
+Acceso denegado: Usuario 1 no tiene permisos para el Recurso 2.
+````
+Como el usuario 1 no puede hacer nada con el recurso 2, aparece este mensaje.
+Ahora probando con el usuario 2 y el recurso 1.
+````Bash
+Sistema de control de acceso
+Introduce el id del usuario (1-3): 2
+Introduce el id del recurso (1-4): 1
+Acceso permitido: Usuario 2 puede realizar la operación 'Lectura' en el Recurso 1.
+````
+Como si peude acceder aparece las operaciones que peude realizar, en este caso Lectura.
 
 ## Ejercicio 5: Protección basada en el lenguaje
 La protección basada en el lenguaje refiere a técnicas que utilizan constructos de programación para prevenir ataques. Esto incluye enfoques como la verificación de tipos y el manejo seguro de memoria, que limitan las vulnerabilidades en las aplicaciones. ayuda a prevenir la ejecución de código malicioso. Al imponer restricciones en la manipulación de datos, protege la memoria y evita exploitaciones de vulnerabilidades.
@@ -287,6 +357,75 @@ Algunos tipos de mecanismos que se usan contra estas amenazas pueden ser:
 * __Tokens:__ Son dispositivos fisicos o digitales que generan códigos únicos (tokens) para validar la identidad del usuario. Pueden ser llaves USB que deben conectarse al sistema, o tambien aplicaciones como Google Authenticator.
 
 Esquema de validacion para un sistema con multiples usuarios:
-![Validacion de sistema operativo con multiples usuarios](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/Validacion%20de%20usuario.jpg?raw=true)
+![Validacion de sistema operativo con multiples usuarios](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/Validacion%20de%20usuario.jpeg?raw=true)
 
 ## Ejercicio 7: Cifrado
+Cifrado es el proceso de transformar texto sin formato legible en texto cifrado ilegible para enmascarar información confidencial de usuarios no autorizados.
+El __cifrado asimétrico__, también conocido como criptografía de clave pública o criptografía asimétrica, es uno de los dos métodos principales de cifrado junto con el cifrado simétrico. El cifrado asimétrico funciona creando un par de claves, una pública y otra privada. Cualquiera puede usar una clave pública para cifrar datos. Sin embargo, solo los titulares de la clave privada correspondiente pueden descifrar esos datos.
+El __cifrado simétrico__ funciona mediante la creación de una única clave compartida para cifrar y descifrar datos confidenciales. El principal beneficio del cifrado simétrico es que generalmente es simple y eficiente para proteger los datos. 
+
+Ejemplos:
+Un sistema operativo utiliza cifrado simétrico para proteger un archivo sensible, como un archivo de configuración con credenciales o claves de API. El sistema operativo genera una clave secreta única para el usuario o proceso, Esta clave se almacena en un área segura del sistema, como un módulo de seguridad (TPM o HSM).
+Cuando el archivo necesita ser protegido, se cifra con AES usando esta clave secreta, para acceder al archivo, el sistema lo descifra con la misma clave secreta. 
+
+Un sistema operativo implementa cifrado asimétrico para asegurar la transferencia de datos en red, como en una conexión SSH (Secure Shell). Cuando un usuario se conecta al servidor a través de SSH, el servidor envía su clave pública al cliente, el cliente cifra los datos con esta clave publica. 
+Solo el servidor, que posee la clave privada correspondiente, puede descifrar estos datos. Una vez establecida la conexión, un cifrado simétrico se utiliza para el resto de la sesión. Herramientas como OpenSSH  utilizan este enfoque para proteger las conexiones remotas.
+
+Este codigo simula el cifrado y descifrado de un arhivo. Para el codigo se uso la dependencia cryptography, para installarlo se usó
+````Bash
+pip install cryptography
+````
+~~~
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+~~~
+__cryptography.hazmat.primitives.ciphers__ contiene herramientas para trabajar con cifrados como AES. __Cipher__ es la clase principal que permite configurar un cifrado. __algorithms.AES__ especifica el algoritmo AES (Advanced Encryption Standard). __modes.CBC__ se refiere al modo de operación CBC (Cipher Block Chaining). __default_backend__ es el Backend predeterminado que configura las operaciones criptograficas.
+
+Se usan estos datos de entrada
+~~~
+mensaje = b"Hola, mundo!"  
+clave = b"1234567890123456"  
+iv = b"abcdefghijklmnop" 
+~~~
+El __mensaje__ es el texto que se va a cifrar. La __clave__ es la clave que se va a usar para descifrar el texto. El __iv__ es el vector de inicializacion, se usa en modos como CBC para garantizar que el cifrado sea único incluso si el mismo texto y clave se reutilizan, también debe ser de 16 bytes.
+
+~~~
+cipher = Cipher(algorithms.AES(clave), modes.CBC(iv), backend=default_backend())
+~~~
+Aqui se configura un cifrado.
+Se usa __algorithms.AES(clave)__ con AES como algoritmo de cifrado con la clave dada. El __modes.CBC(iv)__ Especifica el modo CBC, que usa bloques y requiere un vector de inicialización. Se usa __default_backend()__ que realiza las operaciones criptográficas con Backend.
+
+~~~
+cifrador = cipher.encryptor()
+mensaje_cifrado = cifrador.update(mensaje.ljust(16)) + cifrador.finalize() 
+~~~
+Aqui __cipher.encryptor()__ devuelve un objeto para cifrar datos.
+En __mensaje_cifrado__ se usa mensaje.ljust(16) que ajusta manualmente el tamaño del mensaje a 16 bytes rellenando con espacios. __cifrador.update(mensaje.ljust(16))__ va cifrar el mensaje ajustado. __cifrador.finalize()__ finaliza el proceso de cifrado y devuelve un bloque restante. Todo esto hace que se devuelva el mensaje cifrado como una secuencia de bytes.
+
+Que despues se puede imprimir el mensaje con un print
+~~~
+print("Mensaje cifrado:", mensaje_cifrado)
+~~~
+
+Ahora se necesita descifrar el mensaje
+~~~
+descifrador = cipher.decryptor()
+mensaje_descifrado = descifrador.update(mensaje_cifrado) + descifrador.finalize()
+~~~
+Aqui __cipher.decryptor()__ devuelve un objeto para descifrar datos.
+Para __mensaje_descifrado__ se usa __descifrador.update(mensaje_cifrado)__ que descifra el mensaje. __descifrador.finalize()__ hace que finalice el proceso de descifrado y devuelve cualquier bloque restante. Esto consigue el mensaje cifrado, incluyendo el relleno.
+
+Por ultimo se imprime el mensaje
+~~~
+print("Mensaje descifrado:", mensaje_descifrado.strip())
+~~~
+
+Resultado:
+Cifra primero el mensaje
+````Bash
+Mensaje cifrado: b'\xc0\x1f\x8c-\x1eV\xd9\\c\xa5\r\xbd.\xa7-\xdf'
+````
+Despues descifra el mensaje y lo muestra
+````Bash
+Mensaje descifrado: b'Hola, mundo!'
+````
