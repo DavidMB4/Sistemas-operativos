@@ -158,7 +158,9 @@ Fin
 
 Modelo jerarquico ejemplo
 ![Modelo jerarquico de sistema de archivos](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/jerarquia%20directorios.jpg?raw=true)
-
+Representa la forma en que estan distribuidos la jerarquia en los archivos de unix/linux. Tiene __/bin__ que es donde estan los ejecutables esenciales que el usuario o el sistema necesita para funcionar de forma correcta.
+__/home__ que es donde se guardan las carpetas personales del usuario.
+__/lib__ que contiene bibliotecas esenciales compartidas por los programas en /bin y /sbin.
 
 Existen diferentes formas y herramientas para respaldar información.
 * Se puedes utilizar el uso de discos duros (HDD) o discos de estado solido (SSD) como una unidad externa para almacenar informacion importante, pero necesitan ser actualziadas constantemente.
@@ -255,3 +257,36 @@ La siguiente parte seria la autorización, el sistema verifica los permisos del 
 
 En la auditoria cada acción realizada por el empleado es registrada en los logs del sistema.
 Si se detecta un intento de acceso no autorizado, el sistema genera una alerta en el panel de administración. El administrador del sistema revisa los registros de auditoría para identificar qué ocurrió, cuándo y quién intentó acceder sin autorización. Esto permite la determinar la responsabilidad de las acciones en el sistema, detectar actividades sospechosas o violaciones de seguridad, y tener un historial completo de las operaciones para análisis futuros.
+
+## Ejercicio 4: Implantación de matrices de acceso
+
+## Ejercicio 5: Protección basada en el lenguaje
+La protección basada en el lenguaje refiere a técnicas que utilizan constructos de programación para prevenir ataques. Esto incluye enfoques como la verificación de tipos y el manejo seguro de memoria, que limitan las vulnerabilidades en las aplicaciones. ayuda a prevenir la ejecución de código malicioso. Al imponer restricciones en la manipulación de datos, protege la memoria y evita exploitaciones de vulnerabilidades.
+
+ Un ejemplo de esto puede ser Java, Java garantiza la seguridad de la memoria y evita accesos no autorizados. A diferencia de C o C++, Java no permite a los desarrolladores manipular directamente punteros de memoria, esto evita problemas como desbordamiento de búfer o accesos a áreas no autorizadas de la memoria.
+ En una maquina virtual Java tambien puede manejar la asignación y liberación de memoria automáticamente, evita problemas como fugas de memoria o el uso de memoria ya liberada (errores de dangling pointers).
+ Antes de ejecutar el código, la JVM verifica el bytecode para asegurar que cumple con las reglas de acceso a memoria y tipos.
+
+ | **Basada en lenguaje**                | **Protección en sistemas operativos**          
+|:--------------------------------:|----------------------:|
+|  Lenguajes de programación (software)        | Kernel del sistema operativo (hardware y software)  |
+|  Evita errores como desbordamientos y punteros          | Utiliza la MMU y protección de memoria virtual   | 
+|  Controla el acceso con encapsulamiento, restricciones de variables          |Controla el acceso por medio de permisos de archivos, privilegios de procesos   | 
+| No aplica auditoria y monitoreo directamente            | Implementa monitoreo con logs y sistemas de auditoría   | 
+| La vereficacion se hace en el tiempo de compilacion como RUST o de ejecución como en Java     | Generalmente se hace la verificacion en el tiempo de ejecución   | 
+
+## Ejercicio 6: Validación y amenazas al sistema
+El sistema operativo tiene diferentes tipos de amenazas, las mas comunes son:
+* __Fuerza bruta:__ Es una ataque en el que se prueben todas las claves posibles en una búsqueda exhaustiva, Por ejemplo, en sistemas de cifrado de 56 bits, un atacante intentará descifrar un texto cifrado probando cada clave posible hasta que el resultado sea inteligible. Este ataque es costoso en tiempo y recursos, pero es efectivo si no existen medidas de protección, como límites en intentos de autenticación o uso de algoritmos robustos.
+* __Malware:__ Es una categoría de códigos maliciosos que incluyen virus,  troyanos, o spyware, usan medios y herramientas de comunicación populares para extenderse, incluyendo gusanos enviados a través de e-mails, troyanos que entran a través de páginas Web y archivos infectados por virus descargados en conexiones directas entre usuarios. Tienen la capacidad de corromper los archivos que haya guardado en el disco duro o incluso destruir determinados archivos.
+* __Inyección de codigo:__ En este tipo de ataque, un hacker aprovecha las debilidades de la aplicación para insertar código malicioso en el servidor y así poder robar información confidencial, tomar el control del sistema o realizar otras acciones dañinas
+
+Algunos tipos de mecanismos que se usan contra estas amenazas pueden ser:
+* __Autenticación multifactor:__ La autenticación multifactor (MFA) agrega una capa de protección al proceso de inicio de sesión. Cuando se accede a una cuenta o aplicación, los usuarios deben pasar por una verificación de identidad adicional; por ejemplo, tienen que escanear su huella digital o especificar un código que reciben en su teléfono.
+* __Control de integridad:__ Es un mecanismo que asegura que los datos y archivos no hayan sido alterados de manera no autorizada durante su almacenamiento, transmisión o procesamiento. Su objetivo principal es garantizar que la información sea consistente, precisa y confiable
+* __Tokens:__ Son dispositivos fisicos o digitales que generan códigos únicos (tokens) para validar la identidad del usuario. Pueden ser llaves USB que deben conectarse al sistema, o tambien aplicaciones como Google Authenticator.
+
+Esquema de validacion para un sistema con multiples usuarios:
+![Validacion de sistema operativo con multiples usuarios]()
+
+## Ejercicio 7: Cifrado
