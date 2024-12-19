@@ -1337,7 +1337,7 @@ if __name__ == "__main__":
 
 ###  4.4 Operaciones de Entrada/Salida
 ######  1. Diseña un flujo que describa el proceso de lectura de un archivo desde un disco magnético. Acompáñalo con un programa básico que simule el proceso.
-![Lectura de un archivo desde un disco magnetico]()
+![Lectura de un archivo desde un disco magnetico](https://github.com/DavidMB4/Sistemas-operativos/blob/master/Listar_disp_conectados/Flujo%20de%20lectura.jpeg?raw=true)
 
 Para representar esto se hace el siguiente codigo.
 ~~~
