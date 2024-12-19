@@ -1057,6 +1057,636 @@ int main() {
 }
 ~~~
 
+### 4.3 Estructuras de datos para manejo de dispositivos
+###### 1. Investiga y explica qué es una cola de E/S. Diseña una simulación de una cola con prioridad.
+Una cola de E/S es una estructura utilizada en sistemas operativos para gestionar las solicitudes de acceso a dispositivos de entrada/salida, como discos duros, impresoras, o dispositivos de red. Algunas solicitudes pueden tener mayor importancia y deben ser procesadas antes.
+Para la simulacion se importó heapq que proporciona una implementación eficiente de colas de prioridad utilizando un montículo (heap).
+~~~
+class SolicitudES:
+    def __init__(self, prioridad, id_solicitud, dispositivo):
+        self.prioridad = prioridad  
+        self.id_solicitud = id_solicitud  
+        self.dispositivo = dispositivo  
+~~~
+Esta parte define la clase __SolicitudES__ para representar una solicitud de entrada/salida, se usa la __prioridad__ para determinal el nievel de importancia de la solicitud, el __id_solicitud__ es identificador único para distinguir solicitudes, y __dispositivo__ especifica el dispositivo asociado con la solicitud.
+
+~~~
+def __lt__(self, other):
+        return self.prioridad > other.prioridad
+~~~
+Esta parte sobrecarga el operador < para comparar objetos de la clase SolicitudES, cambia la lógica de comparación para que el montículo organice las solicitudes en función de su prioridad
+
+~~~
+def simular_cola_prioridad():
+    cola_prioridad = []
+~~~
+Esta parte define una función para simular la cola de E/S con prioridad, crea una lista vacía que actuará como la cola de prioridad.
+
+~~~
+heapq.heappush(cola_prioridad, SolicitudES(3, "Req1", "Disco Duro"))
+    heapq.heappush(cola_prioridad, SolicitudES(1, "Req2", "Impresora"))
+    heapq.heappush(cola_prioridad, SolicitudES(2, "Req3", "Red"))
+    heapq.heappush(cola_prioridad, SolicitudES(3, "Req4", "Teclado"))
+~~~
+Inserta solicitudes en la cola con heapq.heappush y se crean objetos SolicitudES con prioridad, identificador, y dispositivo.
+~~~
+while cola_prioridad:
+        solicitud = heapq.heappop(cola_prioridad)
+~~~
+Se utiliza el bucle para ejecutarse mientras haya elementos en la cola y __heapq.heappop__ elimina y devuelve el elemento de mayor prioridad.
+Y por ultimo imprime la informacion sobre la solicitud procesada.
+Resultado en terminal:
+````Bash
+Procesando solicitudes de E/S por prioridad:
+Procesando Req1 en Disco Duro con prioridad 3
+Procesando Req4 en Teclado con prioridad 3
+Procesando Req3 en Red con prioridad 2
+Procesando Req2 en Impresora con prioridad 1
+````
+Codigo completo:
+~~~
+import heapq
+
+class SolicitudES:
+    def __init__(self, prioridad, id_solicitud, dispositivo):
+        self.prioridad = prioridad  
+        self.id_solicitud = id_solicitud 
+        self.dispositivo = dispositivo  
+
+    def __lt__(self, other):
+        return self.prioridad > other.prioridad
+
+def simular_cola_prioridad():
+    cola_prioridad = []
+
+    heapq.heappush(cola_prioridad, SolicitudES(3, "Req1", "Disco Duro"))
+    heapq.heappush(cola_prioridad, SolicitudES(1, "Req2", "Impresora"))
+    heapq.heappush(cola_prioridad, SolicitudES(2, "Req3", "Red"))
+    heapq.heappush(cola_prioridad, SolicitudES(3, "Req4", "Teclado"))
+
+    print("Procesando solicitudes de E/S por prioridad:")
+    while cola_prioridad:
+        solicitud = heapq.heappop(cola_prioridad)
+        print(f"Procesando {solicitud.id_solicitud} en {solicitud.dispositivo} con prioridad {solicitud.prioridad}")
+
+simular_cola_prioridad()
+~~~
+
+###### 2. Escribe un programa que simule las operaciones de un manejador de dispositivos utilizando una tabla de estructuras
+Primero se define la clase __Dispositivo__ la cual va a tener como atributos nombre y tipo como almacenamiento, salida o entrada. Y simula operaciones de abrir, cerrar, leer, y escribir.
+~~~
+class Dispositivo:
+    def __init__(self, nombre, tipo):
+        self.nombre = nombre
+        self.tipo = tipo
+
+    def abrir(self):
+        print(f"El dispositivo {self.nombre} de tipo {self.tipo} ha sido abierto.")
+
+    def cerrar(self):
+        print(f"El dispositivo {self.nombre} de tipo {self.tipo} ha sido cerrado.")
+
+    def leer(self):
+        print(f"Leyendo datos del dispositivo {self.nombre}...")
+
+    def escribir(self, datos):
+        print(f"Escribiendo '{datos}' en el dispositivo {self.nombre}.")
+~~~
+
+Se crea despues una tabla de dsipostivos
+~~~
+tabla_dispositivos = {
+    "1": Dispositivo("Disco Duro", "Almacenamiento"),
+    "2": Dispositivo("Impresora", "Salida"),
+    "3": Dispositivo("Teclado", "Entrada"),
+    "4": Dispositivo("Pantalla", "Salida")
+}
+~~~
+
+Despues se crea un menu para seleccionar la operacion que el usuario pueda realizar.
+~~~
+def main():
+    while True:
+        mostrar_menu()
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "5":
+            print("Saliendo del manejador de dispositivos. ¡Adiós!")
+            break
+
+        id_disp = seleccionar_dispositivo()
+        dispositivo = tabla_dispositivos.get(id_disp)
+
+        if not dispositivo:
+            print("Dispositivo no válido. Intente de nuevo.")
+            continue
+
+        if opcion == "1":
+            dispositivo.abrir()
+        elif opcion == "2":
+            dispositivo.cerrar()
+        elif opcion == "3":
+            dispositivo.leer()
+        elif opcion == "4":
+            datos = input("Ingrese los datos a escribir: ")
+            dispositivo.escribir(datos)
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+if __name__ == "__main__":
+    main()
+~~~
+Prueba del codigo:
+````Bash
+--- Menú de Operaciones ---
+1. Abrir dispositivo
+2. Cerrar dispositivo
+3. Leer dispositivo
+4. Escribir en dispositivo
+5. Salir
+Seleccione una opción: 1
+
+--- Dispositivos Disponibles ---
+1. Disco Duro (Almacenamiento)
+2. Impresora (Salida)
+3. Teclado (Entrada)
+4. Pantalla (Salida)
+Seleccione el ID del dispositivo: 1
+El dispositivo Disco Duro de tipo Almacenamiento ha sido abierto.
+
+--- Menú de Operaciones ---
+1. Abrir dispositivo
+2. Cerrar dispositivo
+3. Leer dispositivo
+4. Escribir en dispositivo
+5. Salir
+Seleccione una opción: 2
+
+--- Dispositivos Disponibles ---
+1. Disco Duro (Almacenamiento)
+2. Impresora (Salida)
+3. Teclado (Entrada)
+4. Pantalla (Salida)
+Seleccione el ID del dispositivo: 1
+El dispositivo Disco Duro de tipo Almacenamiento ha sido cerrado.
+
+--- Menú de Operaciones ---
+1. Abrir dispositivo
+2. Cerrar dispositivo
+3. Leer dispositivo
+4. Escribir en dispositivo
+5. Salir
+Seleccione una opción: 4
+
+--- Dispositivos Disponibles ---
+1. Disco Duro (Almacenamiento)
+2. Impresora (Salida)
+3. Teclado (Entrada)
+4. Pantalla (Salida)
+Seleccione el ID del dispositivo: 3
+Ingrese los datos a escribir: Hola
+Escribiendo 'Hola' en el dispositivo Teclado.
+
+--- Menú de Operaciones ---
+1. Abrir dispositivo
+2. Cerrar dispositivo
+3. Leer dispositivo
+4. Escribir en dispositivo
+5. Salir
+Seleccione una opción: 3
+
+--- Dispositivos Disponibles ---
+1. Disco Duro (Almacenamiento)
+2. Impresora (Salida)
+3. Teclado (Entrada)
+4. Pantalla (Salida)
+Seleccione el ID del dispositivo: 4
+Leyendo datos del dispositivo Pantalla...
+````
+Codigo completo:
+~~~
+class Dispositivo:
+    def __init__(self, nombre, tipo):
+        self.nombre = nombre
+        self.tipo = tipo
+
+    def abrir(self):
+        print(f"El dispositivo {self.nombre} de tipo {self.tipo} ha sido abierto.")
+
+    def cerrar(self):
+        print(f"El dispositivo {self.nombre} de tipo {self.tipo} ha sido cerrado.")
+
+    def leer(self):
+        print(f"Leyendo datos del dispositivo {self.nombre}...")
+
+    def escribir(self, datos):
+        print(f"Escribiendo '{datos}' en el dispositivo {self.nombre}.")
+
+tabla_dispositivos = {
+    "1": Dispositivo("Disco Duro", "Almacenamiento"),
+    "2": Dispositivo("Impresora", "Salida"),
+    "3": Dispositivo("Teclado", "Entrada"),
+    "4": Dispositivo("Pantalla", "Salida")
+}
+
+def mostrar_menu():
+    print("\n--- Menú de Operaciones ---")
+    print("1. Abrir dispositivo")
+    print("2. Cerrar dispositivo")
+    print("3. Leer dispositivo")
+    print("4. Escribir en dispositivo")
+    print("5. Salir")
+
+def seleccionar_dispositivo():
+    print("\n--- Dispositivos Disponibles ---")
+    for id_disp, dispositivo in tabla_dispositivos.items():
+        print(f"{id_disp}. {dispositivo.nombre} ({dispositivo.tipo})")
+    return input("Seleccione el ID del dispositivo: ")
+
+def main():
+    while True:
+        mostrar_menu()
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "5":
+            print("Saliendo del manejador de dispositivos. ¡Adiós!")
+            break
+
+        id_disp = seleccionar_dispositivo()
+        dispositivo = tabla_dispositivos.get(id_disp)
+
+        if not dispositivo:
+            print("Dispositivo no válido. Intente de nuevo.")
+            continue
+
+        if opcion == "1":
+            dispositivo.abrir()
+        elif opcion == "2":
+            dispositivo.cerrar()
+        elif opcion == "3":
+            dispositivo.leer()
+        elif opcion == "4":
+            datos = input("Ingrese los datos a escribir: ")
+            dispositivo.escribir(datos)
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+if __name__ == "__main__":
+    main()
+~~~
+
+###  4.4 Operaciones de Entrada/Salida
+######  1. Diseña un flujo que describa el proceso de lectura de un archivo desde un disco magnético. Acompáñalo con un programa básico que simule el proceso.
+![Lectura de un archivo desde un disco magnetico]()
+
+Para representar esto se hace el siguiente codigo.
+~~~
+disco_simulado = {
+    "archivo1.txt": {"pista": 3, "sector": 15, "contenido": "Este es el contenido de archivo1.txt"},
+    "archivo2.txt": {"pista": 7, "sector": 20, "contenido": "Este es el contenido de archivo2.txt"},
+    "archivo3.txt": {"pista": 1, "sector": 5, "contenido": "Este es el contenido de archivo3.txt"},
+}
+~~~
+Es un diccionario que representa un disco magnético. La pista se refiere a la posición en el disco donde está el archivo. El sector se refiere a el sector específico de la pista donde se almacena el archivo. Y el contenido es el texto que contiene el archivo. Esto simula la estructura basica de almacenamiento en un disco.
+
+~~~
+def leer_archivo(disco, nombre_archivo):
+    print("Solicitud de lectura recibida...")
+    time.sleep(1)
+~~~
+Define una función que toma el disco simulado y el nombre del archivo como parámetros, luego imprime un mensaje indicando que la solicitud ha sido recibida, tambien simula un pequeño retraso (1 segundo) para imitar el tiempo que tarda el sistema en procesar la solicitud.
+
+~~~
+    if nombre_archivo not in disco:
+        print(f"Error: El archivo '{nombre_archivo}' no existe en el disco.")
+        return
+
+~~~
+Si no existe, imprime un mensaje de error y termina la ejecución con return.
+
+~~~
+ metadata = disco[nombre_archivo]
+    pista = metadata["pista"]
+    sector = metadata["sector"]
+    contenido = metadata["contenido"]
+~~~
+metadata = disco[nombre_archivo] obtiene los datos asociados al archivo solicitado (pista, sector y contenido).
+
+~~~
+print(f"Ubicando archivo en el disco: Pista {pista}, Sector {sector}...")
+    time.sleep(random.uniform(0.5, 1.5))
+
+ print("Leyendo datos del archivo...")
+    time.sleep(random.uniform(0.5, 1.5))
+
+    print(f"Contenido del archivo '{nombre_archivo}':\n{contenido}")
+    print("Lectura completada.")
+    time.sleep(1)
+~~~
+Aqui se muestra el proceso de localizar el archivo en el disco, y simula el tiempo de búsqueda de forma aleatoria entre 0.5 y 1.5 segundos.
+Tambien lo hace al leer el archivo y muestra su contenido.
+
+~~~
+print("=== Simulación de lectura desde disco magnético ===")
+archivo_solicitado = input("Ingrese el nombre del archivo que desea leer (archivo1.txt, archivo2.txt, archivo3.txt): ")
+leer_archivo(disco_simulado, archivo_solicitado)
+~~~
+Esto sirve para que el usuario ingrese el nombre del archivo que quiere.
+
+Terminal:
+````Bash
+=== Simulación de lectura desde disco magnético ===
+Ingrese el nombre del archivo que desea leer (archivo1.txt, archivo2.txt, archivo3.txt): archivo1.txt
+Solicitud de lectura recibida...
+Ubicando archivo en el disco: Pista 3, Sector 15...
+Leyendo datos del archivo...
+Contenido del archivo 'archivo1.txt':
+Este es el contenido de archivo1.txt
+Lectura completada.
+````
+Codigo completo:
+~~~
+import time
+import random
+
+disco_simulado = {
+    "archivo1.txt": {"pista": 3, "sector": 15, "contenido": "Este es el contenido de archivo1.txt"},
+    "archivo2.txt": {"pista": 7, "sector": 20, "contenido": "Este es el contenido de archivo2.txt"},
+    "archivo3.txt": {"pista": 1, "sector": 5, "contenido": "Este es el contenido de archivo3.txt"},
+}
+
+def leer_archivo(disco, nombre_archivo):
+    print("Solicitud de lectura recibida...")
+    time.sleep(1)
+
+
+    if nombre_archivo not in disco:
+        print(f"Error: El archivo '{nombre_archivo}' no existe en el disco.")
+        return
+    
+    # Obtener la ubicación del archivo
+    metadata = disco[nombre_archivo]
+    pista = metadata["pista"]
+    sector = metadata["sector"]
+    contenido = metadata["contenido"]
+
+    print(f"Ubicando archivo en el disco: Pista {pista}, Sector {sector}...")
+    time.sleep(random.uniform(0.5, 1.5))  
+
+    print("Leyendo datos del archivo...")
+    time.sleep(random.uniform(0.5, 1.5))  
+
+    print(f"Contenido del archivo '{nombre_archivo}':\n{contenido}")
+    print("Lectura completada.")
+    time.sleep(1)
+
+print("=== Simulación de lectura desde disco magnético ===")
+archivo_solicitado = input("Ingrese el nombre del archivo que desea leer (archivo1.txt, archivo2.txt, archivo3.txt): ")
+leer_archivo(disco_simulado, archivo_solicitado)
+~~~
+
+###### 2. Implementa un programa en Python, C o java que realice operaciones de entrada/salida asíncronas usando archivos.
+Para realizar las operaciones de forma asincrona se usa el modulo asyncio.
+~~~
+async def leer_archivo_async(nombre_archivo):
+    """Lee un archivo de manera asíncrona."""
+    print(f"Iniciando lectura del archivo: {nombre_archivo}")
+    await asyncio.sleep(0.5)  
+    try:
+        with open(nombre_archivo, "r") as archivo:
+            contenido = archivo.read()
+        print(f"Lectura completada: {nombre_archivo}")
+        return contenido
+    except FileNotFoundError:
+        print(f"Error: El archivo {nombre_archivo} no existe.")
+        return None
+~~~
+Esta funcion simula la lectura de un archivo con un pequeño retardo utilizando await asyncio.sleep(0.5), intenta abrir el archivo especificado en modo lectura y retorna su contenido, y maneja una excepcion en caso de que no exista el archivo.
+
+~~~
+async def escribir_archivo_async(nombre_archivo, contenido):
+    """Escribe en un archivo de manera asíncrona."""
+    print(f"Iniciando escritura en el archivo: {nombre_archivo}")
+    await asyncio.sleep(0.5) 
+    with open(nombre_archivo, "w") as archivo:
+        archivo.write(contenido)
+    print(f"Escritura completada: {nombre_archivo}")
+~~~
+Esta funcion simula la escritura en un archivo con un retardo igual de 0.5. Abre el archivo especificado en modo escritura y escribe el contenido proporcionado.
+
+~~~
+async def main():
+    """Función principal que coordina la E/S asíncrona."""
+    archivo_entrada = "entrada.txt"
+    archivo_salida = "salida.txt"
+    
+    await escribir_archivo_async(archivo_entrada, "Este es un ejemplo de E/S asíncrona en Python.")
+    
+    contenido = await leer_archivo_async(archivo_entrada)
+    
+    if contenido:
+        await escribir_archivo_async(archivo_salida, contenido.upper())
+~~~
+La funcion main coordina las operaciones de entrada y salida. 
+Escribe un archivo de entrada con contenido inicial, lee ese archivo y, si es exitoso, guarda el contenido en un archivo de salida, transformándolo en mayúsculas
+Resultado en la terminal:
+````Bash
+Iniciando escritura en el archivo: entrada.txt
+Escritura completada: entrada.txt
+Iniciando lectura del archivo: entrada.txt
+Lectura completada: entrada.txt
+Iniciando escritura en el archivo: salida.txt
+Escritura completada: salida.txt
+````
+Codigo completo:
+~~~
+import asyncio
+
+async def leer_archivo_async(nombre_archivo):
+    """Lee un archivo de manera asíncrona."""
+    print(f"Iniciando lectura del archivo: {nombre_archivo}")
+    await asyncio.sleep(0.5)  
+    try:
+        with open(nombre_archivo, "r") as archivo:
+            contenido = archivo.read()
+        print(f"Lectura completada: {nombre_archivo}")
+        return contenido
+    except FileNotFoundError:
+        print(f"Error: El archivo {nombre_archivo} no existe.")
+        return None
+
+async def escribir_archivo_async(nombre_archivo, contenido):
+    """Escribe en un archivo de manera asíncrona."""
+    print(f"Iniciando escritura en el archivo: {nombre_archivo}")
+    await asyncio.sleep(0.5) 
+    with open(nombre_archivo, "w") as archivo:
+        archivo.write(contenido)
+    print(f"Escritura completada: {nombre_archivo}")
+
+async def main():
+    """Función principal que coordina la E/S asíncrona."""
+    archivo_entrada = "entrada.txt"
+    archivo_salida = "salida.txt"
+    
+    await escribir_archivo_async(archivo_entrada, "Este es un ejemplo de E/S asíncrona en Python.")
+    
+    contenido = await leer_archivo_async(archivo_entrada)
+    
+    if contenido:
+        await escribir_archivo_async(archivo_salida, contenido.upper())
+
+asyncio.run(main())
+~~~
+
+### Integración
+######  1. Escribe un programa que implemente el algoritmo de planificación de discos "Elevator (SCAN)"
+El algoritmo d¿se puede hacer de forma ascendente.
+~~~
+if direccion == 'ascendente':
+    orden_acceso.extend(mayores)
+    orden_acceso.extend(reversed(menores))
+
+~~~
+O de forma descendente.
+~~~
+elif direccion == 'descendente':
+    orden_acceso.extend(reversed(menores))
+    orden_acceso.extend(mayores)
+~~~
+
+Codigo completo:
+~~~
+def elevator_scan(peticiones, inicio, direccion, limite):
+
+    peticiones = sorted(peticiones)
+    recorridas = []
+    
+    if direccion == "ascendente":
+        parte_asc = [p for p in peticiones if p >= inicio]
+        parte_desc = [p for p in peticiones if p < inicio][::-1]
+        recorridas = parte_asc + parte_desc
+    else:
+        parte_desc = [p for p in peticiones if p <= inicio][::-1]
+        parte_asc = [p for p in peticiones if p > inicio]
+        recorridas = parte_desc + parte_asc
+
+    return recorridas
+
+
+
+peticiones = [40, 180, 20, 10, 90, 150]
+inicio = 50
+direccion = "ascendente"
+limite = 200
+
+orden_acceso = elevator_scan(peticiones, inicio, direccion, limite)
+print(f"Orden de acceso: {orden_acceso}")
+~~~
+
+Terminal:
+````Bash
+Orden de acceso: [90, 150, 180, 40, 20, 10]
+````
+
+######  2. Diseña un sistema que maneje múltiples dispositivos simulados (disco duro, impresora, teclado) y muestra cómo se realiza la comunicación entre ellos.
+En este codigo se simula cómo un sistema maneja las solicitudes concurrentes de diferentes dispositivos de forma ordenada, usando hilos para que las tareas puedan ejecutarse en paralelo, y una cola para organizar las solicitudes de forma secuencial. 
+
+~~~
+import threading
+import queue
+import time
+
+cola_dispositivos = queue.Queue()
+
+def dispositivo(nombre, intervalo, operacion):
+    """Simula un dispositivo que realiza operaciones."""
+    while True:
+        solicitud = f"{nombre} solicita realizar {operacion}"
+        cola_dispositivos.put(solicitud)
+        print(f"{nombre}: Solicitud encolada.")
+        time.sleep(intervalo)  
+
+def manejador_dispositivos():
+    """Procesa las solicitudes de los dispositivos en la cola."""
+    while True:
+        if not cola_dispositivos.empty():
+            solicitud = cola_dispositivos.get()
+            print(f"Manejador: Procesando -> {solicitud}")
+            time.sleep(1) 
+
+
+hilo_disco = threading.Thread(target=dispositivo, args=("Disco Duro", 2, "lectura/escritura"))
+hilo_impresora = threading.Thread(target=dispositivo, args=("Impresora", 3, "impresión"))
+hilo_teclado = threading.Thread(target=dispositivo, args=("Teclado", 1, "entrada de datos"))
+
+
+hilo_manejador = threading.Thread(target=manejador_dispositivos, daemon=True)
+
+
+hilo_disco.start()
+hilo_impresora.start()
+hilo_teclado.start()
+hilo_manejador.start()
+
+
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    print("Simulación terminada.")
+~~~
+
+Los dispositivos generan solicitudes periódicas y cada dispositivo tiene un intervalo fijo entre solicitudes, simulando el tiempo que pasa entre sus operaciones. 
+El manejador actúa como un administrador que procesa las solicitudes generadas por los dispositivos, una a la vez, en el orden en que llegaron.
+Cada dispositivo y el manejador funcionan como hilos independientes, lo que permite que el sistema gestione múltiples tareas al mismo tiempo.
+por ultimo todas las solicitudes pasan por una cola central, que asegura que se procesan en el orden en que fueron recibidas.
+
+Resultado en terminal:
+````Bash
+Disco Duro: Solicitud encolada.
+Impresora: Solicitud encolada.
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Disco Duro solicita realizar lectura/escritura
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Impresora solicita realizar impresión
+Disco Duro: Solicitud encolada.
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Teclado solicita realizar entrada de datos
+Impresora: Solicitud encolada.
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Teclado solicita realizar entrada de datos
+Disco Duro: Solicitud encolada.
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Disco Duro solicita realizar lectura/escritura
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Teclado solicita realizar entrada de datos
+Impresora: Solicitud encolada.
+Disco Duro: Solicitud encolada.
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Impresora solicita realizar impresión
+Teclado: Solicitud encolada.
+Manejador: Procesando -> Teclado solicita realizar entrada de datos
+Disco Duro: Solicitud encolada.
+Teclado: Solicitud encolada.
+````
+
+Y el bucle continua ejecutando la simulacion.
+
+### Avanzados
+###### 1. Explica cómo los sistemas operativos modernos optimizan las operaciones de entrada/salida con el uso de memoria caché.
+La caché es un área de memoria rápida, generalmente ubicada en la RAM o incluso en hardware especializado, que almacena temporalmente datos que se usan con frecuencia. El objetivo es reducir el número de accesos directos a dispositivos de E/S, que son más lentos.
+
+El uso de memoria caché en las operaciones de entrada/salida (E/S) actúa como un intermediario de alta velocidad entre los dispositivos de almacenamiento más lentos, como discos duros y la memoria RAM.
+
+Cuando un programa necesita leer datos de un dispositivo, por ejemplo, un archivo en disco, el sistema operativo primero verifica si esos datos ya están en la caché. Si los datos están en la caché, que se conoce como acierto de caché, se devuelven directamente, evitando el acceso al dispositivo. Si no están (fallo de caché), los datos se leen del dispositivo y se almacenan en la caché para futuros accesos.
+
+En lugar de escribir directamente en el dispositivo, el sistema operativo guarda temporalmente los datos en la caché (escritura diferida). Cuando hay menos actividad, se escriben los datos en el dispositivo en bloques más grandes, reduciendo la cantidad de operaciones.
+
+Los sistemas operativos utilizan estrategias específicas para maximizar la eficiencia de la caché, por ejemplo: 
+* Políticas de reemplazo: Cuando la caché está llena, el sistema operativo decide qué datos descartar, puede hacer esto por medio de LRU o FIFO.
+* Prefetching o precarga: El sistema operativo predice qué datos podrían necesitarse pronto y los carga en la caché antes de que sean solicitados, esto se hace basándose en patrones de acceso.
+* Buffering: Agrupa múltiples operaciones pequeñas en una sola operación grande, lo que mejora la eficiencia al reducir la sobrecarga de E/S.
+
 
 ### Listar dispositivos conectados
 ```bash
