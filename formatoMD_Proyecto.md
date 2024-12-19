@@ -162,6 +162,37 @@ Representa la forma en que estan distribuidos la jerarquia en los archivos de un
 __/home__ que es donde se guardan las carpetas personales del usuario.
 __/lib__ que contiene bibliotecas esenciales compartidas por los programas en /bin y /sbin.
 
+Ejemplo de simulacion:
+Si un directorio en un sistema Linux sufrió una falla debido a corrupción de datos. Los archivos en este directorio ya no son accesibles.
+Se vereficia el directorio con 
+````Bash
+ls /proyectos
+````
+Si devuelve un error como "Input/output error", indica que hay un problema en el sistema de archivos. Para evitar más daños, montar el sistema de archivos en modo de solo lectura.
+````Bash
+mount -o remount,ro /dev/sdX
+````
+Donde /dev/sdX es el disco donde se encuentra el directorio /proyectos.
+
+Se puede usar herramientas como fsck para analizar y reparar el sistema de archivos:
+````Bash
+fsck /dev/sdX
+````
+Si fsck no soluciona el problema, usar herramientas de recuperación de datos como testdisk o photorec para recuperar los archivos.
+````Bash
+testdisk /dev/sdX
+````
+Si se tenía configurada una copia de seguridad automatizada, restaurar el directorio desde ella con:
+````Bash
+rsync -av /backup/proyectos /proyectos
+````
+
+Si no hay respaldo, usar herramientas como grep o strings en el disco afectado para intentar recuperar fragmentos de texto o archivos importantes. Esto es útil para rescatar datos parciales.
+````Bash
+grep -a "contenido" /dev/sdX
+````
+
+
 Existen diferentes formas y herramientas para respaldar información.
 * Se puedes utilizar el uso de discos duros (HDD) o discos de estado solido (SSD) como una unidad externa para almacenar informacion importante, pero necesitan ser actualziadas constantemente.
 * Tambien es utilizar el servidores en la nube como Drive para almacenar los datos a traves de la conexion a internet. Este tipos de guardado puede programarse para hacer resplados cada cierto tiempo de forma frecuente.
